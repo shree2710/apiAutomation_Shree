@@ -16,12 +16,12 @@ import utils.ConfigReader;
  */
 public class SauceLoginTest {
 
-    @BeforeMethod
+    @BeforeMethod(alwaysRun = true)
     public void setUp() {
         DriverFactory.init();
     }
 
-    @Test
+    @Test(groups = {"smoke", "regression"})
     public void validLoginShowsProducts() {
         WebDriver driver = DriverFactory.getDriver();
 
@@ -34,7 +34,7 @@ public class SauceLoginTest {
         Assert.assertFalse(products.productNames().isEmpty(), "Product list should not be empty");
     }
 
-    @Test
+    @Test(groups = {"regression"})
     public void invalidLoginShowsError() {
         WebDriver driver = DriverFactory.getDriver();
 
@@ -46,7 +46,7 @@ public class SauceLoginTest {
                 "An error message should be shown for invalid credentials");
     }
 
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)
     public void tearDown() {
         DriverFactory.quit();
     }

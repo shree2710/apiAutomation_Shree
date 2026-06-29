@@ -6,7 +6,7 @@ import static io.restassured.RestAssured.given;
 
 public class JsonSchemaValidation {
 
-    @Test
+    @Test(groups = {"regression"})
     void schemaValidation() {
         String baseUrl = ConfigReader.get("jsonserver.baseUrl");
         given()
