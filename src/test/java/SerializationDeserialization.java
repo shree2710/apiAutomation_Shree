@@ -1,29 +1,25 @@
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.testng.Assert;
 import org.testng.annotations.Test;
+import utils.JsonUtil;
 
 public class SerializationDeserialization {
 
     @Test
-    void convertPojoToJson() throws JsonProcessingException {
+    void convertPojoToJson() {
+        Pojo student = new Pojo();
+        student.setName("John");
+        student.setJob_title("SDET");
+        student.setDepartment(new String[]{"Accounts", "HR", "Transit"});
 
-        //created java obj using pojo
-        Pojo stuobj = new Pojo();
-        stuobj.setName("John");
-        stuobj.setJob_title("SDET");
-        String[] dep ={"Accounts","HR", "Transit"};
-        stuobj.setDepartment(dep);
-
-        //converting java -- json obj
-        ObjectMapper objm= new ObjectMapper();
-        String jsondata = objm.writerWithDefaultPrettyPrinter().writeValueAsString(stuobj);
-        System.out.println(jsondata);
+        // Java object -> JSON via the shared utility
+        String json = JsonUtil.toPrettyJson(student);
+        System.out.println(json);
+        Assert.assertTrue(json.contains("SDET"));
     }
 
-    void convertJsontoPojo() throws JsonProcessingException {
-
-
-        String jsondata = "{\n" +
+    @Test
+    void convertJsonToPojo() {
+        String json = "{\n" +
                 "  \"id\" : null,\n" +
                 "  \"name\" : \"John\",\n" +
                 "  \"job_title\" : \"SDET\",\n" +
@@ -31,13 +27,13 @@ public class SerializationDeserialization {
                 "  \"salary\" : null\n" +
                 "}";
 
-        //converting json data -- Pojo obj
-        ObjectMapper objm= new ObjectMapper();
-        Pojo p = objm.readValue(jsondata,Pojo.class);
-        System.out.println("Name:"+p.getName());
-        System.out.println("JobTitle:"+p.getJob_title());
-        System.out.println("Department:"+p.getDepartment()[0]);
+        // JSON -> Java object via the shared utility
+        Pojo p = JsonUtil.fromJson(json, Pojo.class);
+        System.out.println("Name: " + p.getName());
+        System.out.println("JobTitle: " + p.getJob_title());
+        System.out.println("Department: " + p.getDepartment()[0]);
 
+        Assert.assertEquals(p.getName(), "John");
+        Assert.assertEquals(p.getJob_title(), "SDET");
     }
-
 }
