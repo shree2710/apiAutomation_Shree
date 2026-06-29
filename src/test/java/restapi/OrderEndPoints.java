@@ -1,64 +1,52 @@
 package restapi;
 
 import api_payloads.Store;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import services.BaseService;
+import utils.ConfigReader;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static io.restassured.RestAssured.given;
+/**
+ * Store/order CRUD against Petstore, built on the shared {@link BaseService}.
+ *
+ * Endpoints are relative paths (the base URI lives in config), which removes
+ * the old duplicated {@code base_url} and the {@code //store} double-slash.
+ */
+public class OrderEndPoints extends BaseService {
 
-//method created for performing CURD operations
-public class OrderEndPoints {
-    public static Response createOrder(Store payload){
-        Response r = given().contentType(ContentType.JSON).accept(ContentType.JSON)
-                .body(payload)
-                .when().post(Routes.post_url);
+    private static final String ORDER = "/store/order";
+    private static final String ORDER_BY_ID = "/store/order/{orderId}";
 
-        return r;
+    public OrderEndPoints() {
+        super(ConfigReader.get("petstore.baseUrl"));
     }
-// use of java stream
-    public static Response readOder(String orderID){
-        List<String> orderIds = Arrays.asList("101", "102", "103");
-       /* Response r = given()
-                .pathParam("orderId",orderID)
-                .when().get(Routes.get_url);*/
 
-        List<Response> responses = orderIds.stream()
-                .map(id -> given()
-                        .pathParam("orderId", id)
-                        .when()
-                        .get(Routes.get_url))
-                .collect(Collectors.toList());
+    public Response createOrder(Store payload) {
+        return post(ORDER, payload);
+    }
 
+    public Response getOrder(String orderId) {
+        return request().pathParam("orderId", orderId).when().get(ORDER_BY_ID);
+    }
 
-        return  responses.stream()
-                .filter(response -> response.path("orderId").equals(orderID))
+    public Response updateOrder(String orderId, Store payload) {
+        return request().pathParam("orderId", orderId).body(payload).when().put(ORDER_BY_ID);
+    }
+
+    public Response deleteOrder(String orderId) {
+        return request().pathParam("orderId", orderId).when().delete(ORDER_BY_ID);
+    }
+
+    /**
+     * Streams demo: fetch each id and return the first order that actually
+     * exists (HTTP 200), or throw if none do.
+     */
+    public Response findFirstExistingOrder(List<String> orderIds) {
+        return orderIds.stream()
+                .map(this::getOrder)
+                .filter(response -> response.getStatusCode() == 200)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Invalid orderID: " + orderID));
-
+                .orElseThrow(() -> new IllegalArgumentException("No existing order found in: " + orderIds));
     }
-
-    public static Response updateOrder(String orderID,Store payload) {
-        Response r = given().contentType(ContentType.JSON).accept(ContentType.JSON)
-                .pathParam("orderId", orderID)
-                .body(payload)
-                .when().put(Routes.update_url);
-
-        return r;
-    }
-
-    public static Response updateOrder(String orderID){
-            Response r = given()
-                    .pathParam("orderId",orderID)
-                    .when()
-                    .delete(Routes.delete_url);
-            return r;
-        }
-
-
-
-
 }
