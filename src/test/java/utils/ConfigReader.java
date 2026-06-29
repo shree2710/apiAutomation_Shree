@@ -29,17 +29,36 @@ public final class ConfigReader {
 
     private static Properties load() {
         Properties props = new Properties();
-        try (InputStream in = ConfigReader.class.getClassLoader().getResourceAsStream(CONFIG_FILE)) {
+        loadInto(props, CONFIG_FILE, true);
+        // Environment overlay: -Denv=qa|staging|prod (or ENV var) overrides base values.
+        String env = environment();
+        if (env != null && !env.isBlank()) {
+            loadInto(props, "config-" + env.trim().toLowerCase() + ".properties", false);
+        }
+        return props;
+    }
+
+    /** Loads {@code resource} into {@code props}, overwriting existing keys. */
+    private static void loadInto(Properties props, String resource, boolean required) {
+        try (InputStream in = ConfigReader.class.getClassLoader().getResourceAsStream(resource)) {
             if (in == null) {
-                throw new ConfigException(CONFIG_FILE + " not found on the classpath");
+                if (required) {
+                    throw new ConfigException(resource + " not found on the classpath");
+                }
+                return; // optional overlay simply absent
             }
             props.load(in);
-            return props;
         } catch (ConfigException e) {
             throw e;
         } catch (Exception e) {
-            throw new ConfigException("Failed to load " + CONFIG_FILE, e);
+            throw new ConfigException("Failed to load " + resource, e);
         }
+    }
+
+    /** The selected environment from {@code -Denv} or the {@code ENV} variable, if any. */
+    private static String environment() {
+        String env = System.getProperty("env");
+        return (env != null && !env.isBlank()) ? env : System.getenv("ENV");
     }
 
     /** Returns the value for {@code key}, or throws if it is missing/blank. */

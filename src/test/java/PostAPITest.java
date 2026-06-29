@@ -9,7 +9,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class PostAPITest {
 
-    @Test
+    @Test(groups = {"regression"})
     void postUsingHashMap() {
         Map<String, Object> data = new HashMap<>();
         data.put("name", "KPMG");

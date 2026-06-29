@@ -16,7 +16,7 @@ public class StoreTest {
     private final OrderEndPoints orderApi = new OrderEndPoints();
     private Store payload;
 
-    @BeforeClass
+    @BeforeClass(alwaysRun = true)
     public void dataSetup() {
         Faker faker = new Faker();
         payload = new Store();
@@ -27,7 +27,7 @@ public class StoreTest {
         payload.setComplete(false);
     }
 
-    @Test(priority = 1)
+    @Test(priority = 1, groups = {"smoke", "regression"})
     public void testPostOrder() {
         Response res = orderApi.createOrder(payload);
         res.then().log().all();
