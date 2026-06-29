@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<!--
+  All API-layer tests. Run with:  mvn test -Dsurefire.suiteXmlFiles=testng-api.xml
+  Note: PostAPITest and JsonSchemaValidation need a local json-server on :3000,
+  and LoginAPITest needs the private auth server.
+-->
+<suite name="API Suite" verbose="1">
+    <test name="api">
+        <classes>
+            <class name="SerializationDeserialization"/>
+            <class name="GetAPITest"/>
+            <class name="PostAPITest"/>
+            <class name="JsonSchemaValidation"/>
+            <class name="LoginAPITest"/>
+            <class name="apitests.StoreTest"/>
+        </classes>
+    </test>
+</suite>
