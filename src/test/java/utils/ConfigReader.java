@@ -13,8 +13,10 @@ import java.util.Properties;
  * loading does not depend on the process working directory, so it behaves the
  * same when run from the IDE, Maven, or CI.
  *
- * System properties win over the file, so any value can be overridden at run
- * time, e.g. {@code -Dpetstore.baseUrl=...}.
+ * Values resolve with the precedence: system property ({@code -Dkey=...}) ->
+ * environment variable ({@code KEY_WITH_UNDERSCORES}) -> the file. This lets
+ * secrets (API keys, credentials) be supplied by CI or the shell instead of
+ * being committed, while the file stays a sensible default.
  */
 public final class ConfigReader {
 
@@ -42,7 +44,7 @@ public final class ConfigReader {
 
     /** Returns the value for {@code key}, or throws if it is missing/blank. */
     public static String get(String key) {
-        String value = System.getProperty(key, PROPERTIES.getProperty(key));
+        String value = resolve(key);
         if (value == null || value.isBlank()) {
             throw new ConfigException("Missing required config key: " + key);
         }
@@ -51,7 +53,25 @@ public final class ConfigReader {
 
     /** Returns the value for {@code key}, or {@code defaultValue} when absent. */
     public static String get(String key, String defaultValue) {
-        String value = System.getProperty(key, PROPERTIES.getProperty(key));
+        String value = resolve(key);
         return (value == null || value.isBlank()) ? defaultValue : value.trim();
+    }
+
+    /** Resolves a key as: system property -> environment variable -> file. */
+    private static String resolve(String key) {
+        String sysProp = System.getProperty(key);
+        if (sysProp != null && !sysProp.isBlank()) {
+            return sysProp;
+        }
+        String env = System.getenv(toEnvVar(key));
+        if (env != null && !env.isBlank()) {
+            return env;
+        }
+        return PROPERTIES.getProperty(key);
+    }
+
+    /** Maps a config key to its environment-variable form, e.g. {@code ui.baseUrl -> UI_BASEURL}. */
+    private static String toEnvVar(String key) {
+        return key.toUpperCase().replace('.', '_').replace('-', '_');
     }
 }
