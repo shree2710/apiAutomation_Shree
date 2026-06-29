@@ -1,34 +1,42 @@
 package api_payloads;
 
+/**
+ * Payload for the Petstore {@code /store/order} API.
+ *
+ * Field names match the JSON the API expects, and the getters/setters now
+ * line up with their fields (the old {@code shipDate} field had
+ * {@code getShip_date}/{@code setShip_date} accessors, which broke mapping).
+ */
 public class Store {
-    int order_id;
-    String quantity;
-    int shipDate;
-    //String department[];
-    String status;
 
-    public int getOrder_id() {
-        return order_id;
+    private long id;
+    private int quantity;
+    private String shipDate;
+    private String status;
+    private boolean complete;
+
+    public long getId() {
+        return id;
     }
 
-    public void setOrder_id(int order_id) {
-        this.order_id = order_id;
+    public void setId(long id) {
+        this.id = id;
     }
 
-    public String getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(String quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public int getShip_date() {
+    public String getShipDate() {
         return shipDate;
     }
 
-    public void setShip_date(int ship_date) {
-        this.shipDate = ship_date;
+    public void setShipDate(String shipDate) {
+        this.shipDate = shipDate;
     }
 
     public String getStatus() {
@@ -39,5 +47,11 @@ public class Store {
         this.status = status;
     }
 
+    public boolean isComplete() {
+        return complete;
+    }
 
+    public void setComplete(boolean complete) {
+        this.complete = complete;
+    }
 }

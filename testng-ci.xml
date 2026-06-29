@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<!--
+  CI suite: only tests that can run on a clean runner with internet + Chrome.
+  Deliberately excludes:
+    - PostAPITest / JsonSchemaValidation  (need a local json-server on :3000)
+    - LoginAPITest                        (needs the private auth server)
+  Run everything locally instead with:  mvn test
+-->
+<suite name="CI Suite" verbose="1">
+    <test name="offline-api-ui">
+        <classes>
+            <class name="SerializationDeserialization"/>   <!-- offline: Jackson via JsonUtil -->
+            <class name="apitests.StoreTest"/>              <!-- public API: Petstore -->
+            <class name="uitests.SauceLoginTest"/>          <!-- UI: SauceDemo (headless Chrome) -->
+        </classes>
+    </test>
+</suite>
