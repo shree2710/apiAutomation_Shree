@@ -4,7 +4,7 @@ import services.AuthService;
 
 public class LoginAPITest {
 
-    @Test
+    @Test(groups = {"regression"})
     public void loginTestWithAuth() {
         AuthService authService = new AuthService();
         Response response = authService.login("{\"username\": \"uday1234\", \"password\": \"uday1234\"}");

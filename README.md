@@ -63,14 +63,24 @@ overridden at runtime. Precedence (highest first): **system property
 | `ui.browser` | `UI_BROWSER` | `chrome` / `firefox` / `edge` |
 | `ui.headless` | `UI_HEADLESS` | `true` / `false` |
 | `ui.username` / `ui.password` | `UI_USERNAME` / `UI_PASSWORD` | UI credentials |
+| `env` | `ENV` | environment overlay: `qa` / `staging` / `prod` |
+| `retry.count` | `RETRY_COUNT` | retries for transient env failures (default 1) |
 
 Secrets are best supplied via env vars or `-D` rather than committed.
+
+**Environment overlays:** passing `-Denv=staging` loads `config-staging.properties`
+on top of `config.properties`, overriding endpoint URLs per environment. Files live in
+`src/main/resources/config-{qa,staging,prod}.properties`.
 
 ## Running tests
 
 ```bash
 # Everything (needs local json-server + private auth server for some tests)
 mvn test
+
+# Suite selection (smoke = fast critical subset, regression = everything)
+mvn test -Dsurefire.suiteXmlFiles=testng-smoke.xml
+mvn test -Dsurefire.suiteXmlFiles=testng-regression.xml
 
 # Layer-scoped suites
 mvn test -Dsurefire.suiteXmlFiles=testng-api.xml
@@ -79,9 +89,12 @@ mvn test -Dsurefire.suiteXmlFiles=testng-ui.xml
 # CI-safe subset (offline + public API + UI)
 mvn test -Dsurefire.suiteXmlFiles=testng-ci.xml
 
-# Override config at runtime
-mvn test -Dsurefire.suiteXmlFiles=testng-ui.xml -Dui.headless=false -Dui.browser=firefox
+# Suite + environment + runtime overrides
+mvn test -Dsurefire.suiteXmlFiles=testng-smoke.xml -Denv=staging -Dui.headless=false
 ```
+
+Suites are selected by TestNG **groups**: `smoke` (CI-safe critical checks) and
+`regression` (all tests).
 
 ### Tests that need local services
 - `PostAPITest`, `JsonSchemaValidation` — require a json-server on `:3000`.
@@ -89,9 +102,32 @@ mvn test -Dsurefire.suiteXmlFiles=testng-ui.xml -Dui.headless=false -Dui.browser
 
 These are excluded from the CI suite.
 
-## CI
+## Reporting
 
-`.github/workflows/ci.yml` runs on push / PR to `main`/`master`:
+- **ExtentReports** HTML dashboard at `target/extent-report/index.html` (via
+  `listeners/ExtentReportListener`, auto-attached through ServiceLoader). Failed nodes are
+  tagged with their failure category.
+- **Surefire** JUnit XML at `target/surefire-reports/` (consumed by the pipelines).
+- **`target/failure-analysis.md`** — auto-generated triage table of any failures.
+
+## Failure analysis
+
+Failures are auto-classified as **test / environment / application** issues, with a
+recommended fix / workaround / escalation and a 1-working-day SLA. Transient environment
+failures are retried automatically (assertion/test failures are not). See
+[`FAILURE_ANALYSIS.md`](FAILURE_ANALYSIS.md).
+
+## CI/CD
+
+**GitHub Actions** (`.github/workflows/ci.yml`) runs on push / PR to `main`/`master`:
 1. **build** — `mvn clean test-compile` (compile gate for all sources).
 2. **test** — runs `testng-ci.xml` on `ubuntu-latest` (Chrome preinstalled),
    uploading Surefire reports as an artifact.
+
+**Jenkins** (`Jenkinsfile`, declarative) — intended as a multibranch pipeline triggered on
+commit / PR merge:
+- Parameters: **SUITE** (`smoke`/`regression`/`api`/`ui`/`ci`) and **ENVIRONMENT**
+  (`qa`/`staging`/`prod`).
+- Build failure on test failure (non-zero Maven exit fails the build).
+- Publishes JUnit results, the ExtentReport (HTML Publisher), and `failure-analysis.md`.
+- Requires Global Tools named `jdk21` / `maven3` and a Chrome-capable agent.

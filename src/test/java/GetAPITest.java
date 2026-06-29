@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class GetAPITest {
 
-    @Test
+    @Test(groups = {"regression"})
     public void getUsers() {
         String baseUrl = ConfigReader.get("reqres.baseUrl");
         String apiKey = ConfigReader.get("reqres.apiKey");

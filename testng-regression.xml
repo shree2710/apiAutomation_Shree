@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<!--
+  Regression suite: every test, selected via the "regression" group. Run with:
+      mvn test -Dsurefire.suiteXmlFiles=testng-regression.xml
+  Note: PostAPITest / JsonSchemaValidation need a local json-server on :3000, and
+  LoginAPITest needs the private auth server, so run regression against an
+  environment where those are reachable (e.g. -Denv=qa with the services up).
+-->
+<suite name="Regression Suite" verbose="1">
+    <test name="regression">
+        <groups>
+            <run>
+                <include name="regression"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="SerializationDeserialization"/>
+            <class name="GetAPITest"/>
+            <class name="PostAPITest"/>
+            <class name="JsonSchemaValidation"/>
+            <class name="LoginAPITest"/>
+            <class name="apitests.StoreTest"/>
+            <class name="uitests.SauceLoginTest"/>
+        </classes>
+    </test>
+</suite>
