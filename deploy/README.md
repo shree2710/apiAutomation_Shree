@@ -49,6 +49,9 @@ tail -n 40 /var/log/deploy-apiautomation.log   # full provisioning log
 
 **Success = `DEPLOY_STATUS` says `SUCCESS` and `passed="3" failed="0"`.**
 
+For working on the instance interactively (like local), see
+[`RUNNING_ON_EC2.md`](RUNNING_ON_EC2.md).
+
 ## 3. Re-run on demand
 
 ```bash
