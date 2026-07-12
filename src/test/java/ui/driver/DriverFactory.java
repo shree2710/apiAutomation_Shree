@@ -10,13 +10,10 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import utils.ConfigReader;
 
-/**
- * UI core utility - the counterpart of {@link services.BaseService} for the
- * browser side.
- *
- * Creates and tracks one {@link WebDriver} per thread (so suites can run in
+/*
+ * Creates and tracks one { WebDriver} per thread (so suites can run in
  * parallel), driven entirely by config: {@code ui.browser} and
- * {@code ui.headless}. Selenium 4's built-in Selenium Manager downloads the
+ * { ui.headless}. Selenium 4's built-in Selenium Manager downloads the
  * matching driver binary, so no WebDriverManager dependency is needed.
  */
 public final class DriverFactory {
@@ -27,10 +24,10 @@ public final class DriverFactory {
         // utility class - no instances
     }
 
-    /** Creates a driver for the configured browser and binds it to this thread. */
+    /** Creates a driver for the configured browser **/
     public static WebDriver init() {
         BrowserType browser = BrowserType.from(ConfigReader.get("ui.browser", "chrome"));
-        boolean headless = Boolean.parseBoolean(ConfigReader.get("ui.headless", "true"));
+        boolean headless = Boolean.parseBoolean(ConfigReader.get("ui.headless", "false"));
 
         WebDriver driver = create(browser, headless);
         driver.manage().window().maximize();
@@ -65,7 +62,6 @@ public final class DriverFactory {
         }
     }
 
-    /** Returns the driver for this thread, or fails fast if {@link #init()} was not called. */
     public static WebDriver getDriver() {
         WebDriver driver = DRIVER.get();
         if (driver == null) {
@@ -74,7 +70,7 @@ public final class DriverFactory {
         return driver;
     }
 
-    /** Quits the driver and clears the thread binding. Safe to call when none exists. */
+
     public static void quit() {
         WebDriver driver = DRIVER.get();
         if (driver != null) {

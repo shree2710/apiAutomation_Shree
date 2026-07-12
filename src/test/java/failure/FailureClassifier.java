@@ -9,12 +9,8 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 /**
- * Pure, side-effect-free mapping from a thrown {@link Throwable} to a
- * {@link FailureCategory}. Kept separate from any TestNG listener so it can be
+ Kept separate from any TestNG listener so it can be
  * unit-tested and reused.
- *
- * The cause chain is walked, so a network failure wrapped by REST Assured (or
- * an assertion wrapped by a runner) is still recognized.
  */
 public final class FailureClassifier {
 
@@ -29,7 +25,7 @@ public final class FailureClassifier {
                 return category;
             }
             if (t.getCause() == t) {
-                break; // guard against self-referential cause chains
+                break;
             }
         }
         return FailureCategory.UNKNOWN;

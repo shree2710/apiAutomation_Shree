@@ -4,7 +4,7 @@ import utils.JsonUtil;
 
 public class SerializationDeserialization {
 
-    @Test(groups = {"smoke", "regression"})
+    @Test
     void convertPojoToJson() {
         Pojo student = new Pojo();
         student.setName("John");
@@ -17,7 +17,7 @@ public class SerializationDeserialization {
         Assert.assertTrue(json.contains("SDET"));
     }
 
-    @Test(groups = {"regression"})
+    @Test
     void convertJsonToPojo() {
         String json = "{\n" +
                 "  \"id\" : null,\n" +

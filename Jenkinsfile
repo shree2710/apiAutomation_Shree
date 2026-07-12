@@ -1,15 +1,8 @@
 // Declarative Jenkins pipeline for the API + UI automation framework.
 //
 // Intended to run as a MULTIBRANCH PIPELINE so branch/PR jobs trigger automatically
-// on code commit / PR merge (via the GitHub webhook). The pollSCM trigger below is a
-// fallback for setups without webhooks.
-//
-// Prerequisites on the Jenkins controller:
-//   - Global Tool Configuration entries named 'jdk21' (JDK 21) and 'maven3' (Maven 3.9+)
-//   - An agent with Google Chrome installed (the UI smoke test runs headless)
-//   - The "HTML Publisher" plugin (for the publishHTML step)
-//
-// This file is a reviewable deliverable; it executes only on a Jenkins controller.
+// on code commit / PR merge .
+
 
 pipeline {
     agent any

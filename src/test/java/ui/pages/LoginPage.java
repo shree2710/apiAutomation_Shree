@@ -4,10 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import utils.ConfigReader;
 
-/**
- * SauceDemo login page. Base URL comes from {@code ui.baseUrl} via the shared
- * {@link ConfigReader} - the same utility the API tests use.
- */
+
 public class LoginPage extends BasePage {
 
     private static final By USERNAME = By.id("user-name");
@@ -24,13 +21,11 @@ public class LoginPage extends BasePage {
         return this;
     }
 
-    /** Logs in and hands back the next page object (fluent navigation). */
     public ProductsPage loginAs(String username, String password) {
         submit(username, password);
         return new ProductsPage(driver);
     }
 
-    /** Logs in expecting failure and returns the displayed error message. */
     public String loginExpectingFailure(String username, String password) {
         submit(username, password);
         return errorMessage();

@@ -3,9 +3,7 @@ package ui.driver;
 import java.util.Arrays;
 
 /**
- * Supported browsers. Resolved from the {@code ui.browser} config value, so the
- * legal set lives in one place (mirrors how {@code enums.OrderStatus} is used
- * on the API side).
+ * Supported browsers.
  */
 public enum BrowserType {
 

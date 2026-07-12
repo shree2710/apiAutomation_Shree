@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * SauceDemo products (inventory) page shown after a successful login.
+ * SauceDemo products page shown after a successful login.
  */
 public class ProductsPage extends BasePage {
 
@@ -27,7 +27,7 @@ public class ProductsPage extends BasePage {
         return textOf(TITLE);
     }
 
-    /** Collections + streams demo: all product names currently rendered. */
+    /** Collections + streams  **/
     public List<String> productNames() {
         return driver.findElements(PRODUCT_NAME).stream()
                 .map(WebElement::getText)

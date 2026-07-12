@@ -9,12 +9,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
-/**
- * Base Page Object - the UI analogue of {@link services.BaseService}.
- *
- * Centralizes the common, wait-backed element interactions so individual pages
- * only declare locators and intent, never raw {@code findElement}/sleep logic.
- */
+
 public abstract class BasePage {
 
     protected final WebDriver driver;

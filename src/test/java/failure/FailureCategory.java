@@ -1,11 +1,7 @@
 package failure;
 
 /**
- * Classification of a test failure, with the engineering action it implies.
- *
- * Maps the three buckets the assignment calls for - test issue, environment
- * issue, application defect - onto fix / workaround / escalation guidance.
- * Mirrors the enum-with-fields style of {@code enums.OrderStatus}.
+ * Classification of a test failure.
  */
 public enum FailureCategory {
 

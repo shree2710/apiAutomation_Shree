@@ -11,8 +11,8 @@ import ui.pages.ProductsPage;
 import utils.ConfigReader;
 
 /**
- * UI test for SauceDemo login - exercises the page objects, the
- * {@link DriverFactory}, and the shared {@link ConfigReader}.
+ * UI test for SauceDemo login - showcasing the page objects, the
+ * { DriverFactory}, and the shared {ConfigReader}.
  */
 public class SauceLoginTest {
 
@@ -22,7 +22,7 @@ public class SauceLoginTest {
     }
 
     @Test(groups = {"smoke", "regression"})
-    public void validLoginShowsProducts() {
+    public void validLoginShowsProducts()  {
         WebDriver driver = DriverFactory.getDriver();
 
         ProductsPage products = new LoginPage(driver)

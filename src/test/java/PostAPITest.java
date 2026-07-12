@@ -3,13 +3,14 @@ import utils.ConfigReader;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 
+
+/* use of HashMap for Post Request */
 public class PostAPITest {
 
-    @Test(groups = {"regression"})
+    @Test
     void postUsingHashMap() {
         Map<String, Object> data = new HashMap<>();
         data.put("name", "KPMG");

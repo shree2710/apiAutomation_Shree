@@ -1,12 +1,8 @@
 package api_payloads;
 
-/**
- * Payload for the Petstore {@code /store/order} API.
- *
- * Field names match the JSON the API expects, and the getters/setters now
- * line up with their fields (the old {@code shipDate} field had
- * {@code getShip_date}/{@code setShip_date} accessors, which broke mapping).
- */
+
+ // Pojo for the Petstore API.
+
 public class Store {
 
     private long id;

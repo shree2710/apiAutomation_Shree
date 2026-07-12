@@ -10,13 +10,7 @@ import org.testng.ISuiteListener;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
-/**
- * Publishes an ExtentReports HTML dashboard to {@code target/extent-report/index.html}.
- *
- * Each failed node is tagged with its {@link FailureCategory}, so the report and
- * the failure-analysis triage stay consistent. Registered via ServiceLoader
- * ({@code META-INF/services/org.testng.ITestNGListener}) so it attaches to every run.
- */
+
 public class ExtentReportListener implements ITestListener, ISuiteListener {
 
     private static final String OUTPUT = "target/extent-report/index.html";
