@@ -14,7 +14,7 @@
             </run>
         </groups>
         <classes>
-            <class name="SerializationDeserialization"/>
+            <class name="apitests.SerializationTest"/>
             <class name="apitests.StoreTest"/>
             <class name="uitests.SauceLoginTest"/>
         </classes>

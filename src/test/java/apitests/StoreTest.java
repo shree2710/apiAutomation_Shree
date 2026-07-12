@@ -35,17 +35,21 @@ public class StoreTest {
         res.then().log().all();
         Assert.assertEquals(res.getStatusCode(), 200);
     }
-    @Test(priority = 2)
+    @Test(priority = 2, groups = {"regression"})
     public void testGetOrderById() {
-        Response res = orderApi.getOrder(this.payload.getId());
-        res.then().log().all();
-        Assert.assertEquals(res.getStatusCode(), 200);
-        existingOrderId = String.valueOf(payload.getId());
-        System.out.println(existingOrderId);
-        //return  existingOrderId;
+        // Deserialized through the shared JsonUtil mapper, so the assertions run
+        // against a typed POJO instead of raw JSON paths.
+        Store order = orderApi.getOrderPayload(payload.getId());
 
+        Assert.assertEquals(order.getId(), payload.getId());
+        Assert.assertEquals(order.getQuantity(), payload.getQuantity());
+        Assert.assertTrue(OrderStatus.apiValues().contains(order.getStatus()),
+                "Status '" + order.getStatus() + "' is not one of " + OrderStatus.apiValues());
+
+        existingOrderId = String.valueOf(order.getId());
     }
-    @Test(priority = 3)
+
+    @Test(priority = 3, groups = {"regression"})
     public void testFindFirstExistingOrder() {
 
         List<String> orderIds = Arrays.asList(

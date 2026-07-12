@@ -48,31 +48,41 @@ src/test/java/
 ├── utils/            ConfigReader, JsonUtil              reusable core utilities
 ├── exceptions/       FrameworkException + Config/Payload/Driver   exception hierarchy
 ├── enums/            OrderStatus                          API enum (streams/collections)
-├── services/         HttpService, BaseService, AuthService   API abstraction (all verbs)
+├── services/         HttpService, BaseService,            API abstraction (all verbs)
+│                     AuthService, ReqresService, EmployeeService
 ├── restapi/          OrderEndPoints                       Petstore CRUD service
-├── api_payloads/     Store, Pojo                          POJOs
-├── apitests/         StoreTest                            API tests
+├── api_payloads/     Store, Employee, Credentials         POJOs
+├── apitests/         StoreTest, ReqresTest, EmployeeTest, API tests
+│                     AuthTest, SerializationTest
 ├── ui/driver/        BrowserType, DriverFactory           UI core utility (ThreadLocal driver)
 ├── ui/pages/         BasePage, LoginPage, ProductsPage    Page Objects
+├── ui/model/         LoginUser                            JSON-driven UI test data
 ├── uitests/          SauceLoginTest                       UI tests
 ├── failure/          FailureCategory, FailureClassifier   failure classification (Part B)
-├── listeners/        ExtentReportListener,                reporting + classification + retry
-│                     FailureClassifierListener,
-│                     RetryAnalyzer, RetryTransformer
-└── (default pkg)     GetAPITest, PostAPITest, LoginAPITest,
-                      JsonSchemaValidation, SerializationDeserialization
+└── listeners/        ExtentReportListener,                reporting + classification + retry
+                      FailureClassifierListener,
+                      RetryAnalyzer, RetryTransformer
 
 src/test/resources/
 ├── storeSchema.json
-└── META-INF/services/org.testng.ITestNGListener   auto-registers the listeners
+├── testdata/ui-login-users.json                    UI login data (read via JsonUtil)
+└── META-INF/services/org.testng.ITestNGListener    auto-registers the listeners
 ```
+
+Every test lives in a package and talks to the API through `services/` — no test
+calls `RestAssured.given()` directly.
 
 ## Design highlights
 
 - **Reusable utilities used across UI + API**
   - `ConfigReader` — classpath-based, fail-fast config with precedence
     *system property → env var → file*, plus per-environment overlays.
-  - `JsonUtil` — one shared Jackson `ObjectMapper`.
+    Used by the API services (base URLs, API keys) **and** the UI layer
+    (`DriverFactory` browser/headless, `LoginPage` base URL, SauceDemo creds).
+  - `JsonUtil` — one shared Jackson `ObjectMapper`. Used on the **API** side by
+    `BaseService` to serialize every request body and deserialize response
+    payloads (e.g. `OrderEndPoints.getOrderPayload` → `Store`), and on the **UI**
+    side to load the JSON-driven login data in `SauceLoginTest`.
   - `DriverFactory` — thread-safe, config-driven WebDriver lifecycle.
 - **Abstractions** — `HttpService` interface + abstract `BaseService` (all four
   verbs); `BasePage` centralizes wait-backed UI interactions.
@@ -141,8 +151,8 @@ mvn test -Dsurefire.suiteXmlFiles=testng-smoke.xml -Denv=staging -Dui.headless=f
 ```
 
 ### Tests that need local services
-- `PostAPITest`, `JsonSchemaValidation` — require a json-server on `:3000`.
-- `LoginAPITest` — requires the private auth server.
+- `apitests.EmployeeTest` — requires a json-server on `:3000`.
+- `apitests.AuthTest` — requires the private auth server.
 
 These are excluded from the smoke/CI suites.
 

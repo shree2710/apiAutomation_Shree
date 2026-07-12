@@ -39,9 +39,9 @@ Test failed
 
 | Test | Failure | Category | Why | Action |
 |---|---|---|---|---|
-| `LoginAPITest.loginTestWithAuth` | `ConnectException` to `64.227.160.186:8080` | Environment | Private auth server unreachable | Workaround: exclude from CI suite; verify box is up; retry |
-| `JsonSchemaValidation` / `PostAPITest` | connection refused to `localhost:3000` | Environment | json-server not running | Start the local service; not an app/test bug |
-| `GetAPITest.getUsers` | `AssertionError: page expected 2` while service returns 200 | Application defect | API contract changed | Escalate to dev with request/response |
+| `AuthTest.loginWithValidCredentials` | `ConnectException` to `64.227.160.186:8080` | Environment | Private auth server unreachable | Workaround: exclude from CI suite; verify box is up; retry |
+| `EmployeeTest` (POST / schema) | connection refused to `localhost:3000` | Environment | json-server not running | Start the local service; not an app/test bug |
+| `ReqresTest.getUsersReturnsRequestedPage` | `AssertionError: page expected 2` while service returns 200 | Application defect | API contract changed | Escalate to dev with request/response |
 | `StoreTest.testPostOrder` | `AssertionError: status 200 vs 404` | Application defect | Endpoint/contract broke | Escalate with evidence |
 | any | `ConfigException: Missing required config key` | Test issue | Config/wiring bug in the framework | Fix config/`ConfigReader` usage |
 | `SauceLoginTest` | `TimeoutException` waiting for an element | Test issue (usually) | Bad/stale locator or wait; escalate only if the element genuinely vanished from the app | Fix locator/wait, else escalate |

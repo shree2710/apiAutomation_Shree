@@ -5,6 +5,10 @@ package exceptions;
  */
 public class PayloadException extends FrameworkException {
 
+    public PayloadException(String message) {
+        super(message);
+    }
+
     public PayloadException(String message, Throwable cause) {
         super(message, cause);
     }

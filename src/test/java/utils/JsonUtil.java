@@ -4,8 +4,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import exceptions.PayloadException;
 
+import java.io.InputStream;
+
 /**
- * Reusable core utility #2.
+ * Reusable core utility #2, used by both the API layer (request bodies and
+ * response payloads in {@code services.BaseService}) and the UI layer
+ * (JSON-driven test data).
  *
  * One shared, thread-safe {@link ObjectMapper} for the whole framework so that
  * every test serializes/deserializes JSON the same way. Checked Jackson
@@ -45,6 +49,23 @@ public final class JsonUtil {
             return MAPPER.readValue(json, type);
         } catch (Exception e) {
             throw new PayloadException("Could not deserialize JSON into " + type.getSimpleName(), e);
+        }
+    }
+
+    /**
+     * Deserializes a JSON file on the classpath into an instance of {@code type}.
+     * Used for JSON-driven test data (pass an array type for a list of records).
+     */
+    public static <T> T fromJsonResource(String resource, Class<T> type) {
+        try (InputStream in = JsonUtil.class.getClassLoader().getResourceAsStream(resource)) {
+            if (in == null) {
+                throw new PayloadException("Test data file not found on the classpath: " + resource);
+            }
+            return MAPPER.readValue(in, type);
+        } catch (PayloadException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new PayloadException("Could not read " + resource + " as " + type.getSimpleName(), e);
         }
     }
 }

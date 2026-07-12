@@ -4,9 +4,9 @@
 <!--
   Regression suite: every test, selected via the "regression" group. Run with:
       mvn test -Dsurefire.suiteXmlFiles=testng-regression.xml
-  Note: PostAPITest / JsonSchemaValidation need a local json-server on :3000, and
-  LoginAPITest needs the private auth server, so run regression against an
-  environment where those are reachable (e.g. -Denv=qa with the services up).
+  Note: EmployeeTest needs a local json-server on :3000, and AuthTest needs the
+  private auth server, so run regression against an environment where those are
+  reachable (e.g. -Denv=qa with the services up).
 -->
 <suite name="Regression Suite" verbose="1">
     <test name="regression">
@@ -16,11 +16,10 @@
             </run>
         </groups>
         <classes>
-            <class name="SerializationDeserialization"/>
-            <class name="GetAPITest"/>
-            <class name="PostAPITest"/>
-            <class name="JsonSchemaValidation"/>
-            <class name="LoginAPITest"/>
+            <class name="apitests.SerializationTest"/>
+            <class name="apitests.ReqresTest"/>
+            <class name="apitests.EmployeeTest"/>
+            <class name="apitests.AuthTest"/>
             <class name="apitests.StoreTest"/>
             <class name="uitests.SauceLoginTest"/>
         </classes>

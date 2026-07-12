@@ -3,17 +3,16 @@
 
 <!--
   All API-layer tests. Run with:  mvn test -Dsurefire.suiteXmlFiles=testng-api.xml
-  Note: PostAPITest and JsonSchemaValidation need a local json-server on :3000,
-  and LoginAPITest needs the private auth server.
+  Note: EmployeeTest needs a local json-server on :3000, and AuthTest needs the
+  private auth server.
 -->
 <suite name="API Suite" verbose="1">
     <test name="api">
         <classes>
-            <class name="SerializationDeserialization"/>
-            <class name="GetAPITest"/>
-            <class name="PostAPITest"/>
-            <class name="JsonSchemaValidation"/>
-            <class name="LoginAPITest"/>
+            <class name="apitests.SerializationTest"/>
+            <class name="apitests.ReqresTest"/>
+            <class name="apitests.EmployeeTest"/>
+            <class name="apitests.AuthTest"/>
             <class name="apitests.StoreTest"/>
         </classes>
     </test>

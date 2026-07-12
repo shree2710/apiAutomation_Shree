@@ -2,7 +2,6 @@ package restapi;
 
 import api_payloads.Store;
 import io.restassured.response.Response;
-import org.testng.annotations.Test;
 import services.BaseService;
 import utils.ConfigReader;
 
@@ -26,6 +25,11 @@ public class OrderEndPoints extends BaseService {
 
     public Response getOrder(Long orderId) {
         return request().pathParam("orderId", orderId).when().get(ORDER_BY_ID);
+    }
+
+    /** The same GET, deserialized into a {@link Store} with the shared JsonUtil mapper. */
+    public Store getOrderPayload(Long orderId) {
+        return as(getOrder(orderId), Store.class);
     }
 
     public Response updateOrder(String orderId, Store payload) {
