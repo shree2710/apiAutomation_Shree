@@ -164,7 +164,8 @@ tree, and worked examples: [`FAILURE_ANALYSIS.md`](FAILURE_ANALYSIS.md).
 
 ## CI/CD
 
-**GitHub Actions** (`.github/workflows/ci.yml`) runs on push / PR to `main`/`master`:
+**GitHub Actions** (`.github/workflows/ci.yml`) runs on push / PR to `master`
+(the canonical branch):
 1. **build** — `mvn clean test-compile` (compile gate for all sources).
 2. **test** — runs `testng-ci.xml` on `ubuntu-latest` (Chrome preinstalled),
    uploading Surefire reports as an artifact.
@@ -176,6 +177,10 @@ triggered on commit / PR merge:
 - **Build failure on test failure** (non-zero Maven exit fails the build).
 - Publishes JUnit results, the ExtentReport (HTML Publisher), and `failure-analysis.md`.
 - Requires Global Tools named `jdk21` / `maven3` and a Chrome-capable agent.
+
+**AWS EC2** (`deploy/`) — provision an Amazon Linux 2023 instance that clones
+`master`, installs Java 21 / Maven / Chrome, and runs the suite on first boot.
+Console-only (no CLI keys). Launch + verification steps: [`deploy/README.md`](deploy/README.md).
 
 ## Run it end to end (local)
 
