@@ -8,17 +8,20 @@
 # Usage on the instance (repo already cloned to e.g. /home/ec2-user/app):
 #     bash /home/ec2-user/app/deploy/ec2-userdata.sh
 #
-# Config: SUITE env var picks the TestNG suite (default: smoke).
+# Config (env vars):
+#   SUITE  TestNG suite to run          (default: smoke)
+#   ENV    -Denv profile / config-<ENV> (default: none -> base config.properties)
 set -u
 
 SUITE="${SUITE:-smoke}"
+ENV="${ENV:-}"
 LOG=/var/log/deploy-apiautomation.log
 # Resolve the repo root as the parent of this script's directory (no re-clone).
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 # Log everything (works whether run by cloud-init as root or by a user via sudo).
 exec > >(sudo tee -a "$LOG" 2>/dev/null || tee -a "$LOG") 2>&1
-echo "=== deploy start: $(date) | suite=$SUITE | repo=$REPO_ROOT ==="
+echo "=== deploy start: $(date) | suite=$SUITE | env=${ENV:-<base>} | repo=$REPO_ROOT ==="
 
 # 1) Java 21 (Amazon Corretto) + Git
 sudo dnf install -y java-21-amazon-corretto-devel git
@@ -42,8 +45,13 @@ git config --global --add safe.directory "$REPO_ROOT"
 cd "$REPO_ROOT"
 echo "--- versions ---"; java -version; /usr/local/bin/mvn -version | head -1; google-chrome --version
 
+# Add -Denv=<ENV> only when ENV is set, so an empty value doesn't select an
+# overlay named "config-.properties".
+ENV_ARG=""
+[ -n "$ENV" ] && ENV_ARG="-Denv=$ENV"
+
 set -o pipefail
-/usr/local/bin/mvn -B test -Dsurefire.suiteXmlFiles="testng-${SUITE}.xml" -Dui.headless=true \
+/usr/local/bin/mvn -B test -Dsurefire.suiteXmlFiles="testng-${SUITE}.xml" -Dui.headless=true $ENV_ARG \
   | tee "$REPO_ROOT/test-output.log"
 STATUS=${PIPESTATUS[0]}
 

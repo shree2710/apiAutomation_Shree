@@ -53,8 +53,12 @@ tail -n 40 /var/log/deploy-apiautomation.log   # full provisioning log
 
 ```bash
 cd ~/app && git pull origin master
-SUITE=smoke bash deploy/ec2-userdata.sh    # or SUITE=regression / api / ui / ci
+SUITE=smoke bash deploy/ec2-userdata.sh              # suite: smoke/regression/api/ui/ci
+ENV=prod SUITE=smoke bash deploy/ec2-userdata.sh     # target a profile (config-<ENV>.properties)
 ```
+
+`SUITE` selects `testng-<SUITE>.xml` (default `smoke`). `ENV` maps to
+`-Denv=<ENV>`, overlaying `config-<ENV>.properties` (default: base config only).
 
 ## 4. Tear down
 
