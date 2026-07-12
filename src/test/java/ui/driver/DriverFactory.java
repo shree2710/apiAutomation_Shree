@@ -27,7 +27,7 @@ public final class DriverFactory {
     /** Creates a driver for the configured browser **/
     public static WebDriver init() {
         BrowserType browser = BrowserType.from(ConfigReader.get("ui.browser", "chrome"));
-        boolean headless = Boolean.parseBoolean(ConfigReader.get("ui.headless", "false"));
+        boolean headless = Boolean.parseBoolean(ConfigReader.get("ui.headless", "true"));
 
         WebDriver driver = create(browser, headless);
         driver.manage().window().maximize();
